@@ -1061,11 +1061,11 @@ public class FileUtils extends CordovaPlugin {
      */
     public void readFileAs(final String srcURLstr, final int start, final int end, final CallbackContext callbackContext, final String encoding, final int resultType) throws MalformedURLException {
         try {
-			Log.d(PERFORMANCE_TAG,"srcURLstr: "+srcURLstr);
-			Log.d(PERFORMANCE_TAG,"start: "+start);
-			Log.d(PERFORMANCE_TAG,"end: "+end);
-			Log.d(PERFORMANCE_TAG,"encoding: "+encoding);
-			Log.d(PERFORMANCE_TAG,"resultType: "+resultType);
+			LOG.d(PERFORMANCE_TAG,"srcURLstr: "+srcURLstr);
+			LOG.d(PERFORMANCE_TAG,"start: "+start);
+			LOG.d(PERFORMANCE_TAG,"end: "+end);
+			LOG.d(PERFORMANCE_TAG,"encoding: "+encoding);
+			LOG.d(PERFORMANCE_TAG,"resultType: "+resultType);
 			TimingLogger timings = new TimingLogger(TIMING_TAG, "readFileAs test");
 			timings.addSplit("passo 01");
         	LocalFilesystemURL inputURL = LocalFilesystemURL.parse(srcURLstr);
