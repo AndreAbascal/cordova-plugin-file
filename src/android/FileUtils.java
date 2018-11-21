@@ -1080,7 +1080,8 @@ public class FileUtils extends CordovaPlugin {
 						Log.d(PERFORMANCE_TAG,"antes do os");
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         // final int BUFFER_SIZE = 8192; //Padrao
-						final int BUFFER_SIZE = 16384; //Pareceu demorar mais que 8192 para 4 fotos (quando utilizado 16384 tb no LocalFileSystem).
+						// final int BUFFER_SIZE = 16384; //Pareceu demorar mais que 8192 para 4 fotos (quando utilizado 16384 tb no LocalFileSystem).
+						final int BUFFER_SIZE = 32768;
                         byte[] buffer = new byte[BUFFER_SIZE];
                         for (;;) {
                             int bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE);
