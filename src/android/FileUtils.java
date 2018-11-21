@@ -1076,10 +1076,13 @@ public class FileUtils extends CordovaPlugin {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
 			timings.addSplit("passo 04");
+			LOG.d(PERFORMANCE_TAG,"antes do readFileAtUrl: ");
             fs.readFileAtURL(inputURL, start, end, new Filesystem.ReadFileCallback() {
                 public void handleData(InputStream inputStream, String contentType) {
+					LOG.d(PERFORMANCE_TAG,"no handleData");
 					timings.addSplit("passo 06");
             		try {
+						LOG.d(PERFORMANCE_TAG,"antes do os");
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         final int BUFFER_SIZE = 8192;
                         byte[] buffer = new byte[BUFFER_SIZE];
@@ -1092,6 +1095,7 @@ public class FileUtils extends CordovaPlugin {
                             }
                             os.write(buffer, 0, bytesRead);
                         }
+						LOG.d(PERFORMANCE_TAG,"depois do read");
 						timings.addSplit("passo 08");
             			PluginResult result;
             			switch (resultType) {
@@ -1111,6 +1115,7 @@ public class FileUtils extends CordovaPlugin {
             			}
 						timings.addSplit("passo 09");
             			callbackContext.sendPluginResult(result);
+						LOG.d(PERFORMANCE_TAG,"depois de tudo");
 						timings.addSplit("passo 10");
 						timings.dumpToLog();
             		} catch (IOException e) {
