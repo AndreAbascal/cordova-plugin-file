@@ -35,6 +35,7 @@ import org.json.JSONObject;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Base64;
+import android.util.Log;
 import android.net.Uri;
 import android.content.Context;
 import android.content.Intent;
@@ -491,9 +492,9 @@ public class LocalFilesystem extends Filesystem {
                 inChannel.position(offset);
                 outChannel.transferFrom(inChannel, 0, length);
             } else {
-                final int BUFFER_SIZE = 8192;
+                // final int BUFFER_SIZE = 8192;
+				final int BUFFER_SIZE = 16384;
                 byte[] buffer = new byte[BUFFER_SIZE];
-
                 for (;;) {
                     int bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE);
 
