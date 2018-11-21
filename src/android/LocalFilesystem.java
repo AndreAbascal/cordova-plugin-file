@@ -492,8 +492,8 @@ public class LocalFilesystem extends Filesystem {
                 inChannel.position(offset);
                 outChannel.transferFrom(inChannel, 0, length);
             } else {
-                // final int BUFFER_SIZE = 8192;
-				final int BUFFER_SIZE = 16384;
+				Log.d("LocalFileSystem","Passou aqui!");
+                final int BUFFER_SIZE = 8192; //Padrao
                 byte[] buffer = new byte[BUFFER_SIZE];
                 for (;;) {
                     int bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE);
