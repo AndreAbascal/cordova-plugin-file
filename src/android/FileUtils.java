@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Base64;
+import android.util.TimingLogger;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -55,6 +56,8 @@ import java.util.HashSet;
  */
 public class FileUtils extends CordovaPlugin {
     private static final String LOG_TAG = "FileUtils";
+	private static final String PERFORMANCE_TAG = "PerformanceLog";
+	private static final String TIMING_TAG = "TimingTag";
 
     public static int NOT_FOUND_ERR = 1;
     public static int SECURITY_ERR = 2;
@@ -1058,19 +1061,29 @@ public class FileUtils extends CordovaPlugin {
      */
     public void readFileAs(final String srcURLstr, final int start, final int end, final CallbackContext callbackContext, final String encoding, final int resultType) throws MalformedURLException {
         try {
+			Log.d(PERFORMANCE_TAG,"srcURLstr: "+srcURLstr);
+			Log.d(PERFORMANCE_TAG,"start: "+start);
+			Log.d(PERFORMANCE_TAG,"end: "+end);
+			Log.d(PERFORMANCE_TAG,"encoding: "+encoding);
+			Log.d(PERFORMANCE_TAG,"resultType: "+resultType);
+			TimingLogger timings = new TimingLogger(TIMING_TAG, "readFileAs test");
+			timings.addSplit("passo 01");
         	LocalFilesystemURL inputURL = LocalFilesystemURL.parse(srcURLstr);
+			timings.addSplit("passo 02");
         	Filesystem fs = this.filesystemForURL(inputURL);
+			timings.addSplit("passo 03");
         	if (fs == null) {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
-
+			timings.addSplit("passo 04");
             fs.readFileAtURL(inputURL, start, end, new Filesystem.ReadFileCallback() {
                 public void handleData(InputStream inputStream, String contentType) {
+					timings.addSplit("passo 06");
             		try {
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         final int BUFFER_SIZE = 8192;
                         byte[] buffer = new byte[BUFFER_SIZE];
-
+						timings.addSplit("passo 07");
                         for (;;) {
                             int bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE);
 
@@ -1079,32 +1092,34 @@ public class FileUtils extends CordovaPlugin {
                             }
                             os.write(buffer, 0, bytesRead);
                         }
-
+						timings.addSplit("passo 08");
             			PluginResult result;
             			switch (resultType) {
-            			case PluginResult.MESSAGE_TYPE_STRING:
-                            result = new PluginResult(PluginResult.Status.OK, os.toString(encoding));
-            				break;
-            			case PluginResult.MESSAGE_TYPE_ARRAYBUFFER:
-                            result = new PluginResult(PluginResult.Status.OK, os.toByteArray());
-            				break;
-            			case PluginResult.MESSAGE_TYPE_BINARYSTRING:
-                            result = new PluginResult(PluginResult.Status.OK, os.toByteArray(), true);
-            				break;
-            			default: // Base64.
-                        byte[] base64 = Base64.encode(os.toByteArray(), Base64.NO_WRAP);
-            			String s = "data:" + contentType + ";base64," + new String(base64, "US-ASCII");
-            			result = new PluginResult(PluginResult.Status.OK, s);
+            				case PluginResult.MESSAGE_TYPE_STRING:
+								result = new PluginResult(PluginResult.Status.OK, os.toString(encoding));
+								break;
+            				case PluginResult.MESSAGE_TYPE_ARRAYBUFFER:
+								result = new PluginResult(PluginResult.Status.OK, os.toByteArray());
+								break;
+            				case PluginResult.MESSAGE_TYPE_BINARYSTRING:
+								result = new PluginResult(PluginResult.Status.OK, os.toByteArray(), true);
+								break;
+            				default: // Base64.
+								byte[] base64 = Base64.encode(os.toByteArray(), Base64.NO_WRAP);
+								String s = "data:" + contentType + ";base64," + new String(base64, "US-ASCII");
+								result = new PluginResult(PluginResult.Status.OK, s);
             			}
-
+						timings.addSplit("passo 09");
             			callbackContext.sendPluginResult(result);
+						timings.addSplit("passo 10");
+						timings.dumpToLog();
             		} catch (IOException e) {
             			LOG.d(LOG_TAG, e.getLocalizedMessage());
             			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.IO_EXCEPTION, NOT_READABLE_ERR));
                     }
             	}
             });
-
+			timings.addSplit("passo 05");
 
         } catch (IllegalArgumentException e) {
             MalformedURLException mue = new MalformedURLException("Unrecognized filesystem URL");
