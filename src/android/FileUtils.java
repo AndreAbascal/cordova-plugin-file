@@ -270,6 +270,7 @@ public class FileUtils extends CordovaPlugin {
     }
 
     public boolean execute(String action, final String rawArgs, final CallbackContext callbackContext) {
+		Log.d(LOG_TAG,"rawArgs: "+rawArgs);
         if (!configured) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "File plugin is not configured. Please see the README.md file for details on how to update config.xml"));
             return true;
@@ -325,6 +326,7 @@ public class FileUtils extends CordovaPlugin {
         else if (action.equals("readAsDataURL")) {
             threadhelper( new FileOp( ){
                 public void run(JSONArray args) throws JSONException, MalformedURLException  {
+					Log.d(LOG_TAG,"args: "+args.toString());
                     int start = args.getInt(1);
                     int end = args.getInt(2);
                     String fname=args.getString(0);
